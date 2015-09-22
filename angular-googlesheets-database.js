@@ -1,6 +1,6 @@
 angular.module('googleSheetsDB',[]).factory('sheetsDB', function($q, $http){
   var config= {
-    doc:'GOOGLEKEY_HERE',
+    doc:'',
     workbook:`https://spreadsheets.google.com/feeds/worksheets/{doc}/public/full?alt=json`,
     sheets:`https://spreadsheets.google.com/feeds/list/{doc}/{sheet}/public/values?alt=json`
   };
@@ -39,15 +39,12 @@ angular.module('googleSheetsDB',[]).factory('sheetsDB', function($q, $http){
     return def.promise;
   }
   
-  return function returnFinalData(cb){
+  return function returnFinalData(doc){
+    config.doc = doc;
     var def = $q.defer();
     _getDataSets().then(function(arr){
-      
       $q.all(arr).then(function(data){
-        if(angular.isFunction(cb))
-          {return cb(data);}
-        else
-          {def.resolve(data);}
+        def.resolve(data);
       });
     });
     return def.promise; //An array of sheets
